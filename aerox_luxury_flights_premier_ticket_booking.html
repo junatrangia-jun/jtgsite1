@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroX | Next-Gen Luxury Flight Booking</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        aerox: {
+                            50: '#f0f4ff',
+                            100: '#e0e9ff',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            900: '#0b132b',
+                            950: '#050b18',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'route-fly': 'routeFly 2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', filter: 'blur(20px)' },
+                            '50%': { opacity: '0.8', filter: 'blur(30px)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        routeFly: {
+                            '0%': { left: '0%', opacity: '0' },
+                            '20%': { opacity: '1' },
+                            '80%': { opacity: '1' },
+                            '100%': { left: '100%', opacity: '0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #050b18;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel-glow {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 30px rgba(2, 132, 199, 0.15);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: rgba(30, 41, 59, 0.75);
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.1);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050b18;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 9999px;
+            border: 2px solid #050b18;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Ambient Glowing Background Elements -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-cyan-600/20 rounded-full animate-pulse-glow pointer-events-none -z-10"></div>
+    <div class="fixed bottom-10 right-10 w-[500px] h-[500px] bg-blue-700/15 rounded-full animate-pulse-glow pointer-events-none -z-10" style="animation-delay: 1.5s;"></div>
+
+    <!-- Top Navigation Bar -->
+    <nav class="sticky top-0 z-40 glass-panel border-b border-slate-800/80 px-4 md:px-8 py-3.5 transition-all">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition">
+                    <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                        <i data-lucide="plane" class="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-tight text-white font-serif italic">Aero<span class="text-cyan-400 font-sans not-italic">X</span></span>
+                    <span class="block text-[9px] uppercase tracking-[0.25em] text-slate-400 -mt-1 font-semibold">Luxury Jetliner</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden lg:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                <a href="#booking-search" class="hover:text-cyan-400 transition flex items-center gap-1.5"><i data-lucide="search" class="w-3.5 h-3.5 text-cyan-400"></i> Flights</a>
+                <a href="#destinations" class="hover:text-cyan-400 transition flex items-center gap-1.5"><i data-lucide="compass" class="w-3.5 h-3.5"></i> Destinations</a>
+                <a href="#fleet" class="hover:text-cyan-400 transition flex items-center gap-1.5"><i data-lucide="crown" class="w-3.5 h-3.5 text-gold-400"></i> First & Private Jet</a>
+                <a href="#status-ticker" class="hover:text-cyan-400 transition flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> Flight Status</a>
+            </div>
+
+            <!-- Action CTA -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleDrawer('cartDrawer')" class="relative p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 transition">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    <span id="cartBadge" class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-cyan-500 text-slate-950 text-[10px] font-bold flex items-center justify-center hidden">0</span>
+                </button>
+                <button class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-xs font-bold uppercase tracking-wider transition shadow-lg shadow-cyan-500/20 active:scale-95">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <span>VIP Portal</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-grow">
+        <!-- Hero & Flight Search Box Section -->
+        <section class="relative pt-8 pb-16 md:pt-16 md:pb-24 px-4 overflow-hidden">
+            <!-- Background Image with Dark Vignette -->
+            <div class="absolute inset-0 -z-20">
+                <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=2000" alt="Aircraft Hero" class="w-full h-full object-cover opacity-25 scale-105 filter blur-[1px]">
+                <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/90 to-slate-950"></div>
+            </div>
+
+            <div class="max-w-6xl mx-auto">
+                <!-- Hero Heading -->
+                <div class="text-center mb-8 md:mb-12 animate-float">
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-widest mb-4">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Redefine Aviation Luxury
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight font-serif italic mb-4">
+                        Fly Beyond <span class="not-italic bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500 bg-clip-text text-transparent">Expectations</span>
+                    </h1>
+                    <p class="max-w-2xl mx-auto text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
+                        Experience supersonic comfort, bespoke private jet charters, and first-class cabins designed for the global elite.
+                    </p>
+                </div>
+
+                <!-- Flight Search Bar Card -->
+                <div id="booking-search" class="glass-panel-glow rounded-3xl p-5 md:p-8 shadow-2xl relative">
+                    <!-- Flight Type Tabs -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-slate-800 pb-4">
+                        <div class="flex items-center gap-2 bg-slate-900/80 p-1 rounded-2xl border border-slate-800">
+                            <button onclick="setTripType('round')" id="btnRoundTrip" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-cyan-500 text-slate-950 shadow-md">Round Trip</button>
+                            <button onclick="setTripType('one')" id="btnOneWay" class="px-4 py-2 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white">One Way</button>
+                            <button onclick="setTripType('charter')" id="btnCharter" class="px-4 py-2 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-gold-400 flex items-center gap-1">
+                                <i data-lucide="crown" class="w-3 h-3"></i> Private Charter
+                            </button>
+                        </div>
+
+                        <!-- Class Selection Dropdown -->
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <label class="text-xs text-slate-400 font-medium">Cabin Tier:</label>
+                            <select id="cabinClassSelect" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                                <option value="First Class">First Class Lounge Suite</option>
+                                <option value="Business Premium">Business Executive</option>
+                                <option value="Private Jet">Private Jet Charter</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Search Inputs Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Origin Input -->
+                        <div class="bg-slate-900/70 p-3.5 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
+                                <i data-lucide="plane-takeoff" class="w-3 h-3"></i> Departure City
+                            </label>
+                            <select id="depCity" class="w-full bg-transparent text-sm font-bold text-white focus:outline-none">
+                                <option value="JFK" class="bg-slate-900">New York (JFK)</option>
+                                <option value="LHR" class="bg-slate-900">London (LHR)</option>
+                                <option value="DXB" class="bg-slate-900" selected>Dubai (DXB)</option>
+                                <option value="HND" class="bg-slate-900">Tokyo (HND)</option>
+                                <option value="CDG" class="bg-slate-900">Paris (CDG)</option>
+                                <option value="SIN" class="bg-slate-900">Singapore (SIN)</option>
+                            </select>
+                        </div>
+
+                        <!-- Destination Input -->
+                        <div class="bg-slate-900/70 p-3.5 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
+                                <i data-lucide="plane-landing" class="w-3 h-3"></i> Destination
+                            </label>
+                            <select id="arrCity" class="w-full bg-transparent text-sm font-bold text-white focus:outline-none">
+                                <option value="HND" class="bg-slate-900" selected>Tokyo (HND)</option>
+                                <option value="JFK" class="bg-slate-900">New York (JFK)</option>
+                                <option value="LHR" class="bg-slate-900">London (LHR)</option>
+                                <option value="CDG" class="bg-slate-900">Paris (CDG)</option>
+                                <option value="DXB" class="bg-slate-900">Dubai (DXB)</option>
+                                <option value="SIN" class="bg-slate-900">Singapore (SIN)</option>
+                            </select>
+                        </div>
+
+                        <!-- Departure Date -->
+                        <div class="bg-slate-900/70 p-3.5 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
+                                <i data-lucide="calendar" class="w-3 h-3"></i> Departure Date
+                            </label>
+                            <input type="date" id="depDate" value="2026-11-15" class="w-full bg-transparent text-xs font-bold text-white focus:outline-none">
+                        </div>
+
+                        <!-- Passengers Count -->
+                        <div class="bg-slate-900/70 p-3.5 rounded-2xl border border-slate-800 hover:border-cyan-500/40 transition">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
+                                <i data-lucide="users" class="w-3 h-3"></i> Passengers
+                            </label>
+                            <select id="passengerCount" class="w-full bg-transparent text-sm font-bold text-white focus:outline-none">
+                                <option value="1" class="bg-slate-900">1 Guest (VIP)</option>
+                                <option value="2" class="bg-slate-900" selected>2 Guests</option>
+                                <option value="4" class="bg-slate-900">4 Guests (Executive)</option>
+                                <option value="8" class="bg-slate-900">Private Party (8+)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Search Execution CTA -->
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="triggerSearch()" class="w-full md:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-slate-950 text-xs font-extrabold uppercase tracking-widest transition shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-2 active:scale-95">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i> Search AeroX Flights
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Flight Listings & Interactive Filters Section -->
+        <section class="max-w-7xl mx-auto px-4 md:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+
+                <!-- Sidebar Filters -->
+                <aside class="w-full lg:w-72 space-y-6 flex-shrink-0">
+                    <div class="glass-panel p-5 rounded-3xl space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                                <i data-lucide="sliders-horizontal" class="w-4 h-4 text-cyan-400"></i> Filters
+                            </h3>
+                            <button onclick="resetFilters()" class="text-[11px] text-cyan-400 hover:underline">Reset All</button>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-300 mb-2">
+                                <span>Max Price Limit</span>
+                                <span id="priceValue" class="font-bold text-cyan-400">$12,000</span>
+                            </div>
+                            <input type="range" id="priceRange" min="1500" max="15000" step="500" value="12000" oninput="filterFlights()" class="w-full accent-cyan-400 cursor-pointer">
+                        </div>
+
+                        <!-- Preferred Carrier -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Carrier Tier</label>
+                            <div class="space-y-2 text-xs">
+                                <label class="flex items-center gap-2 text-slate-400 hover:text-white cursor-pointer">
+                                    <input type="checkbox" checked value="AeroX Prime" onchange="filterFlights()" class="carrier-checkbox rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500">
+                                    AeroX Flagship Supersonic
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-400 hover:text-white cursor-pointer">
+                                    <input type="checkbox" checked value="Emirates First" onchange="filterFlights()" class="carrier-checkbox rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500">
+                                    Emirates Sky Suite
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-400 hover:text-white cursor-pointer">
+                                    <input type="checkbox" checked value="Qatar Qsuite" onchange="filterFlights()" class="carrier-checkbox rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500">
+                                    Qatar Executive Jet
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Departure Time -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Departure Window</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <button class="p-2 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-cyan-500/50 text-slate-300 text-center">Morning (6A-12P)</button>
+                                <button class="p-2 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-cyan-500/50 text-slate-300 text-center">Evening (6P-12A)</button>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Baggage Estimator Launcher -->
+                        <div class="pt-2 border-t border-slate-800">
+                            <button onclick="toggleModal('baggageModal')" class="w-full py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-xs text-cyan-300 font-semibold flex items-center justify-center gap-2 transition">
+                                <i data-lucide="luggage" class="w-4 h-4"></i> Baggage Allowance Calculator
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Flight Listings Container -->
+                <div class="flex-grow space-y-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs font-semibold text-slate-400">Showing <span id="flightCount" class="text-cyan-400">4</span> Luxury Schedules</p>
+                        <span class="text-[11px] text-slate-500 flex items-center gap-1">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> All flights carbon offset included
+                        </span>
+                    </div>
+
+                    <!-- Flight Listing Cards Container -->
+                    <div id="flightListings" class="space-y-4">
+                        <!-- Dynamic Listings Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Destinations Gallery Grid (Hover Reveal) -->
+        <section id="destinations" class="max-w-7xl mx-auto px-4 md:px-8 py-16 border-t border-slate-800/60">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-cyan-400">Curated Destinations</span>
+                    <h2 class="text-2xl md:text-4xl font-extrabold text-white font-serif italic mt-1">Exclusive Hideaways</h2>
+                </div>
+                <p class="text-slate-400 text-xs max-w-md mt-2 md:mt-0">Book direct supersonic access to global business hubs and private islands with seamless chauffeur transfers.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Destination 1 -->
+                <div class="group relative h-80 rounded-3xl overflow-hidden glass-card cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=800" alt="Tokyo" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                    <div class="absolute bottom-0 p-6">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400 bg-slate-900/80 px-2.5 py-1 rounded-md border border-cyan-500/30">Asia Hub</span>
+                        <h3 class="text-2xl font-bold text-white font-serif mt-2">Tokyo Haneda</h3>
+                        <p class="text-xs text-slate-300 opacity-0 group-hover:opacity-100 transition duration-300 mt-1">First-class lounge access & Michelin dining suites.</p>
+                        <div class="mt-3 flex items-center gap-2 text-xs font-bold text-cyan-300">
+                            <span>From $6,400</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destination 2 -->
+                <div class="group relative h-80 rounded-3xl overflow-hidden glass-card cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=800" alt="Dubai" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                    <div class="absolute bottom-0 p-6">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-gold-400 bg-slate-900/80 px-2.5 py-1 rounded-md border border-gold-500/30">Private Jet Entry</span>
+                        <h3 class="text-2xl font-bold text-white font-serif mt-2">Dubai World Central</h3>
+                        <p class="text-xs text-slate-300 opacity-0 group-hover:opacity-100 transition duration-300 mt-1">Helicopter transfers direct to Burj Al Arab pad.</p>
+                        <div class="mt-3 flex items-center gap-2 text-xs font-bold text-cyan-300">
+                            <span>From $8,200</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destination 3 -->
+                <div class="group relative h-80 rounded-3xl overflow-hidden glass-card cursor-pointer sm:col-span-2 lg:col-span-1">
+                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=800" alt="Paris" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                    <div class="absolute bottom-0 p-6">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400 bg-slate-900/80 px-2.5 py-1 rounded-md border border-cyan-500/30">Europe Premier</span>
+                        <h3 class="text-2xl font-bold text-white font-serif mt-2">Paris Le Bourget</h3>
+                        <p class="text-xs text-slate-300 opacity-0 group-hover:opacity-100 transition duration-300 mt-1">Private jet terminal with luxury concierge security.</p>
+                        <div class="mt-3 flex items-center gap-2 text-xs font-bold text-cyan-300">
+                            <span>From $5,900</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Flight Status Ticker Bar -->
+        <section id="status-ticker" class="bg-slate-900/90 border-y border-slate-800 py-6 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 md:px-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-300">Live AeroX Fleet Radar Status</h3>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-semibold">AX-901 • DXB to JFK</span>
+                            <p class="text-xs font-bold text-white mt-0.5">Cruising @ FL410</p>
+                        </div>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">On Time</span>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-semibold">AX-402 • LHR to HND</span>
+                            <p class="text-xs font-bold text-white mt-0.5">Boarding Gate 4A</p>
+                        </div>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">Final Call</span>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-semibold">AX-108 • CDG to SIN</span>
+                            <p class="text-xs font-bold text-white mt-0.5">Pre-flight Prep</p>
+                        </div>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">On Time</span>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-semibold">AX-777 • Private Jet</span>
+                            <p class="text-xs font-bold text-white mt-0.5">Custom Flight Plan</p>
+                        </div>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold bg-gold-500/20 text-gold-400 border border-gold-500/30">VIP Ready</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Experience Reviews Section -->
+        <section class="max-w-7xl mx-auto px-4 md:px-8 py-16">
+            <div class="text-center mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text-gold-400">Guest Endorsements</span>
+                <h2 class="text-2xl md:text-4xl font-extrabold text-white font-serif italic mt-1">Trusted by World Leaders</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 rounded-3xl space-y-4">
+                    <div class="flex items-center gap-1 text-gold-400 text-xs">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed italic">"The private suite privacy and supersonic velocity cut my transatlantic commute in half. AeroX sets a new standard for luxury aviation."</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-cyan-400">
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Elena Rostova</h4>
+                            <span class="text-[10px] text-slate-400">Managing Director, Global Ventures</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl space-y-4">
+                    <div class="flex items-center gap-1 text-gold-400 text-xs">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed italic">"The seat selection preview and in-flight butler service were flawless. The baggage handling and airport transfers are totally seamless."</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-cyan-400">
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Marcus Vance</h4>
+                            <span class="text-[10px] text-slate-400">Tech Founder & Pilot</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl space-y-4">
+                    <div class="flex items-center gap-1 text-gold-400 text-xs">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed italic">"Booking private charters for executive summits takes less than a minute. Unmatched prestige and high-tech cabin acoustic insulation."</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-cyan-400">
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Sophia Chen</h4>
+                            <span class="text-[10px] text-slate-400">Architectural Designer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-12 px-4 md:px-8 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-bold">
+                    AX
+                </div>
+                <span class="text-sm font-bold text-white font-serif">AeroX Luxury Flights</span>
+            </div>
+            <p>© 2026 AeroX Aviation International. All Rights Reserved.</p>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-cyan-400 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-cyan-400 transition">Charter Terms</a>
+                <a href="#" class="hover:text-cyan-400 transition">Concierge Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Seat Selection Modal Overlay -->
+    <div id="seatModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel-glow rounded-3xl max-w-xl w-full p-6 space-y-6 relative border border-cyan-500/30 max-h-[90vh] overflow-y-auto">
+            <button onclick="toggleModal('seatModal')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400">Cabin Suite Layout</span>
+                <h3 id="seatModalFlightTitle" class="text-lg font-bold text-white mt-0.5">Select Your First-Class Suite</h3>
+            </div>
+
+            <!-- Plane Cabin Seat Map Graphic -->
+            <div class="bg-slate-950/90 rounded-2xl p-6 border border-slate-800 text-center relative">
+                <!-- Cockpit Indicator -->
+                <div class="w-24 h-6 border-b-2 border-cyan-500/40 mx-auto mb-6 flex items-center justify-center text-[9px] uppercase tracking-widest text-cyan-400 font-bold">
+                    Cockpit Front
+                </div>
+
+                <!-- Seat Grid -->
+                <div id="seatGrid" class="grid grid-cols-4 gap-4 max-w-xs mx-auto">
+                    <!-- Dynamic seats initialized via JS -->
+                </div>
+
+                <div class="flex justify-center gap-6 mt-6 text-[11px] font-medium text-slate-400">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-800 border border-slate-700"></span> Available</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-cyan-500"></span> Selected</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-700 opacity-40"></span> Reserved</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-slate-800 pt-4">
+                <div>
+                    <span class="text-[10px] text-slate-400">Selected Suite</span>
+                    <p id="selectedSeatNumber" class="text-sm font-bold text-cyan-400">Suite 1A (Window)</p>
+                </div>
+                <button onclick="confirmSeatSelection()" class="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-500/20">
+                    Confirm Seat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Baggage Allowance Calculator Modal -->
+    <div id="baggageModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel-glow rounded-3xl max-w-md w-full p-6 space-y-5 relative border border-slate-800">
+            <button onclick="toggleModal('baggageModal')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="luggage" class="w-4 h-4 text-cyan-400"></i> Baggage Allowance Estimator
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">First class includes 3x 32kg bags free of charge.</p>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Cabin Luggage (Included: 2)</label>
+                    <input type="number" id="cabinBags" value="2" min="1" max="4" onchange="calcBaggage()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Hold Check-in Bags ($150 per extra)</label>
+                    <input type="number" id="checkBags" value="3" min="0" max="8" onchange="calcBaggage()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+
+                <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 flex justify-between items-center font-bold">
+                    <span class="text-slate-300">Total Baggage Fee:</span>
+                    <span id="baggageTotal" class="text-cyan-400">$0.00 (Complimentary)</span>
+                </div>
+            </div>
+
+            <button onclick="toggleModal('baggageModal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider">
+                Apply Baggage Options
+            </button>
+        </div>
+    </div>
+
+    <!-- Ticket Summary Drawer (Shopping Bag) -->
+    <div id="cartDrawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-950/95 backdrop-blur-2xl border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 p-6 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="ticket" class="w-5 h-5 text-cyan-400"></i> Selected Itinerary
+                </h3>
+                <button onclick="toggleDrawer('cartDrawer')" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="cartContent" class="space-y-4">
+                <!-- Cart Content Populated via JS -->
+                <p class="text-xs text-slate-500 text-center py-10">No flight selected. Choose a flight to view ticket details.</p>
+            </div>
+        </div>
+
+        <div id="cartFooter" class="border-t border-slate-800 pt-4 hidden space-y-4">
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-slate-400">Total Booking Price</span>
+                <span id="cartTotalPrice" class="text-xl font-extrabold text-cyan-400">$0.00</span>
+            </div>
+            <button onclick="processCheckout()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-slate-950 text-xs font-extrabold uppercase tracking-widest transition shadow-lg shadow-cyan-500/20 active:scale-95">
+                Proceed to VIP Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Application JavaScript -->
+    <script>
+        // Sample Luxury Flights Database
+        const flightsData = [
+            {
+                id: 'FL-901',
+                carrier: 'AeroX Prime',
+                aircraft: 'Supersonic Concorde-II',
+                from: 'DXB',
+                fromCity: 'Dubai',
+                to: 'JFK',
+                toCity: 'New York',
+                depTime: '08:30 AM',
+                arrTime: '01:15 PM',
+                duration: '6h 45m',
+                price: 8400,
+                seatsLeft: 3,
+                class: 'First Class Lounge Suite',
+                tag: 'Supersonic'
+            },
+            {
+                id: 'FL-402',
+                carrier: 'Emirates First',
+                aircraft: 'Airbus A380 SkySuite',
+                from: 'LHR',
+                fromCity: 'London',
+                to: 'HND',
+                toCity: 'Tokyo',
+                depTime: '11:00 AM',
+                arrTime: '07:30 AM+1',
+                duration: '11h 30m',
+                price: 6900,
+                seatsLeft: 5,
+                class: 'Business Executive',
+                tag: 'Complimentary Spa'
+            },
+            {
+                id: 'FL-777',
+                carrier: 'Qatar Executive Jet',
+                aircraft: 'Gulfstream G700',
+                from: 'DXB',
+                fromCity: 'Dubai',
+                to: 'CDG',
+                toCity: 'Paris',
+                depTime: '04:15 PM',
+                arrTime: '09:00 PM',
+                duration: '6h 45m',
+                price: 13500,
+                seatsLeft: 2,
+                class: 'Private Jet Charter',
+                tag: 'Bespoke Private Charter'
+            },
+            {
+                id: 'FL-108',
+                carrier: 'AeroX Prime',
+                aircraft: 'Boeing 787 VIP Dreamliner',
+                from: 'JFK',
+                fromCity: 'New York',
+                to: 'HND',
+                toCity: 'Tokyo',
+                depTime: '01:00 PM',
+                arrTime: '04:30 PM+1',
+                duration: '13h 30m',
+                price: 7200,
+                seatsLeft: 4,
+                class: 'First Class Lounge Suite',
+                tag: 'Private Bed'
+            }
+        ];
+
+        let selectedFlight = null;
+        let selectedSeat = '1A';
+
+        // Initialize Lucide Icons & Render listings on load
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderFlightListings(flightsData);
+            generateSeatGrid();
+        });
+
+        // Flight Search Trigger
+        function triggerSearch() {
+            const dep = document.getElementById('depCity').value;
+            const arr = document.getElementById('arrCity').value;
+
+            if(dep === arr) {
+                alert("Departure and destination cities cannot be identical.");
+                return;
+            }
+
+            // Filter flights matching route or return fallback demo search
+            let filtered = flightsData.filter(f => f.from === dep && f.to === arr);
+            if(filtered.length === 0) {
+                filtered = flightsData; // Fallback display for dynamic preview
+            }
+
+            renderFlightListings(filtered);
+        }
+
+        // Render Flight Cards
+        function renderFlightListings(flights) {
+            const container = document.getElementById('flightListings');
+            document.getElementById('flightCount').textContent = flights.length;
+            container.innerHTML = '';
+
+            flights.forEach(f => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-3xl p-5 md:p-6 space-y-4';
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                                <i data-lucide="plane-takeoff" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">${f.carrier} <span class="text-slate-400 font-normal">(${f.aircraft})</span></h4>
+                                <span class="text-[10px] text-cyan-400 font-semibold">${f.class}</span>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500/10 text-gold-400 border border-gold-500/30">
+                            ${f.tag}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-4 py-2">
+                        <!-- Origin -->
+                        <div>
+                            <span class="text-2xl font-extrabold text-white">${f.depTime}</span>
+                            <p class="text-xs font-bold text-cyan-300 mt-0.5">${f.fromCity} (${f.from})</p>
+                        </div>
+
+                        <!-- Route Animation Visualizer -->
+                        <div class="text-center space-y-1">
+                            <span class="text-[10px] text-slate-400 font-medium">${f.duration} • Direct</span>
+                            <div class="relative w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-route-fly"></div>
+                            </div>
+                            <span class="text-[10px] text-emerald-400 font-bold">${f.seatsLeft} VIP Suites Left</span>
+                        </div>
+
+                        <!-- Destination -->
+                        <div class="md:text-right">
+                            <span class="text-2xl font-extrabold text-white">${f.arrTime}</span>
+                            <p class="text-xs font-bold text-cyan-300 mt-0.5">${f.toCity} (${f.to})</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-t border-slate-800/80 pt-3">
+                        <div class="flex items-center gap-3">
+                            <button onclick="openSeatModal('${f.id}')" class="text-xs text-slate-300 hover:text-cyan-400 font-semibold flex items-center gap-1 transition">
+                                <i data-lucide="armchair" class="w-4 h-4 text-cyan-400"></i> Seat Preview (${selectedSeat})
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400 block -mb-1">Per Guest</span>
+                                <span class="text-xl font-extrabold text-white">$${f.price.toLocaleString()}</span>
+                            </div>
+                            <button onclick="selectFlight('${f.id}')" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-500/20 active:scale-95">
+                                Select Ticket
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // Seat Grid Generator
+        function generateSeatGrid() {
+            const grid = document.getElementById('seatGrid');
+            grid.innerHTML = '';
+            const seats = ['1A', '1B', '1C', '1D', '2A', '2B', '2C', '2D'];
+
+            seats.forEach(s => {
+                const isTaken = s === '1B' || s === '2C';
+                const btn = document.createElement('button');
+                btn.className = `p-3 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center gap-1 ${
+                    isTaken 
+                        ? 'bg-slate-800/40 border-slate-800 text-slate-600 cursor-not-allowed'
+                        : s === selectedSeat
+                        ? 'bg-cyan-500 border-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/30'
+                        : 'bg-slate-900 border-slate-700 text-slate-300 hover:border-cyan-500/50'
+                }`;
+                btn.disabled = isTaken;
+                btn.innerHTML = `<i data-lucide="armchair" class="w-4 h-4"></i> ${s}`;
+                btn.onclick = () => {
+                    selectedSeat = s;
+                    document.getElementById('selectedSeatNumber').textContent = `Suite ${s} (Window/Aisle)`;
+                    generateSeatGrid();
+                };
+                grid.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function openSeatModal(flightId) {
+            const f = flightsData.find(x => x.id === flightId);
+            if(f) {
+                document.getElementById('seatModalFlightTitle').textContent = `${f.carrier} (${f.aircraft})`;
+            }
+            toggleModal('seatModal');
+        }
+
+        function confirmSeatSelection() {
+            toggleModal('seatModal');
+        }
+
+        // Select Flight into Ticket Drawer
+        function selectFlight(id) {
+            selectedFlight = flightsData.find(f => f.id === id);
+            renderCart();
+            toggleDrawer('cartDrawer');
+        }
+
+        function renderCart() {
+            const cartContent = document.getElementById('cartContent');
+            const cartFooter = document.getElementById('cartFooter');
+            const badge = document.getElementById('cartBadge');
+
+            if(!selectedFlight) {
+                cartContent.innerHTML = '<p class="text-xs text-slate-500 text-center py-10">No flight selected.</p>';
+                cartFooter.classList.add('hidden');
+                badge.classList.add('hidden');
+                return;
+            }
+
+            badge.classList.remove('hidden');
+            badge.textContent = '1';
+
+            cartContent.innerHTML = `
+                <div class="glass-card p-4 rounded-2xl space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <span class="text-xs font-bold text-cyan-400">${selectedFlight.carrier}</span>
+                        <span class="text-[10px] text-slate-400">${selectedFlight.id}</span>
+                    </div>
+
+                    <div class="flex justify-between text-xs text-white font-bold">
+                        <span>${selectedFlight.fromCity} (${selectedFlight.from})</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 text-cyan-400"></i>
+                        <span>${selectedFlight.toCity} (${selectedFlight.to})</span>
+                    </div>
+
+                    <div class="text-[11px] text-slate-300 space-y-1 pt-1">
+                        <p><span class="text-slate-500">Cabin Suite:</span> ${selectedFlight.class}</p>
+                        <p><span class="text-slate-500">Reserved Suite:</span> ${selectedSeat}</p>
+                        <p><span class="text-slate-500">Duration:</span> ${selectedFlight.duration}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('cartTotalPrice').textContent = `$${selectedFlight.price.toLocaleString()}`;
+            cartFooter.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Filter Handlers
+        function filterFlights() {
+            const maxPrice = parseFloat(document.getElementById('priceRange').value);
+            document.getElementById('priceValue').textContent = `$${maxPrice.toLocaleString()}`;
+
+            const filtered = flightsData.filter(f => f.price <= maxPrice);
+            renderFlightListings(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('priceRange').value = 12000;
+            filterFlights();
+        }
+
+        // Baggage Calculator
+        function calcBaggage() {
+            const check = parseInt(document.getElementById('checkBags').value) || 0;
+            const extra = Math.max(0, check - 3);
+            const fee = extra * 150;
+            
+            document.getElementById('baggageTotal').textContent = fee > 0 ? `$${fee}.00` : '$0.00 (Complimentary)';
+        }
+
+        // Modal/Drawer Helpers
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('hidden');
+        }
+
+        function toggleDrawer(id) {
+            const drawer = document.getElementById(id);
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        function setTripType(type) {
+            const btnRound = document.getElementById('btnRoundTrip');
+            const btnOne = document.getElementById('btnOneWay');
+            const btnCharter = document.getElementById('btnCharter');
+
+            btnRound.className = 'px-4 py-2 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white';
+            btnOne.className = 'px-4 py-2 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white';
+            btnCharter.className = 'px-4 py-2 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-gold-400 flex items-center gap-1';
+
+            if(type === 'round') {
+                btnRound.className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-cyan-500 text-slate-950 shadow-md';
+            } else if(type === 'one') {
+                btnOne.className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-cyan-500 text-slate-950 shadow-md';
+            } else {
+                btnCharter.className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-gold-500 text-slate-950 shadow-md flex items-center gap-1';
+            }
+        }
+
+        function processCheckout() {
+            alert(`VIP Reservation Confirmed for ${selectedFlight.carrier}! Seat ${selectedSeat} locked.`);
+            selectedFlight = null;
+            renderCart();
+            toggleDrawer('cartDrawer');
+        }
+    </script>
+</body>
+</html>
